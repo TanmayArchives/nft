@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { NFTProgram } from '@/program/nft_program';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from './ui/use-toast';
@@ -10,7 +12,10 @@ export function VerifyMint() {
   const [email, setEmail] = useState('');
   const [verificationStatus, setVerificationStatus] = useState<'idle' | 'verifying' | 'verified' | 'error'>('idle');
   const [proof, setProof] = useState<string | null>(null);
+  const [isMinting, setIsMinting] = useState(false);
+  
   const wallet = useWallet();
+  const { connection } = useConnection();
   const { toast } = useToast();
 
   const handleVerify = async () => {
@@ -25,12 +30,9 @@ export function VerifyMint() {
 
     try {
       setVerificationStatus('verifying');
-      // Replace with your actual API endpoint
       const response = await fetch('/api/verify-enrollment', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
@@ -60,18 +62,19 @@ export function VerifyMint() {
     if (!wallet.connected || !proof) return;
 
     try {
-      // Replace with your actual minting logic
-      const tx = await program.methods
-        .verifyAndMint(email, proof)
-        .accounts({
-          user: wallet.publicKey,
-          // Add other required accounts
-        })
-        .rpc();
+      setIsMinting(true);
       
+      // Call the NFT program to mint
+      const tx = await NFTProgram.verifyAndMint(
+        connection,
+        wallet.publicKey!,
+        email,
+        proof
+      );
+
       toast({
         title: "Success",
-        description: "NFT minted successfully!",
+        description: "NFT minted successfully! View it in your wallet.",
       });
     } catch (error: any) {
       toast({
@@ -79,6 +82,8 @@ export function VerifyMint() {
         description: error.message || "Failed to mint NFT",
         variant: "destructive",
       });
+    } finally {
+      setIsMinting(false);
     }
   };
 

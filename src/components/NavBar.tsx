@@ -3,12 +3,9 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { SelectTheme } from "./theme-toggle";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export function NavBar() {
-  const wallet = useWallet();
-
   return (
     <>
       <header>

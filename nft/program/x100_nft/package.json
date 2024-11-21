@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "anchor build",
+    "deploy": "anchor deploy",
+    "test": "anchor test",
+    "generate-idl": "anchor build && cp target/idl/x100_nft.json ../../src/idl/x100_nft.json"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.28.0",
+    "@solana/web3.js": "^1.47.4",
+    "@solana/spl-token": "^0.3.8",
+    "ts-mocha": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.0.0",
+    "@types/chai": "^4.3.0",
+    "chai": "^4.3.4",
+    "mocha": "^9.0.3",
+    "typescript": "^4.3.5"
+  }
+} 
